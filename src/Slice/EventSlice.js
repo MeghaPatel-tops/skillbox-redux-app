@@ -1,6 +1,37 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addDoc, collection,query ,getDocs, getDoc, doc, deleteDoc} from "firebase/firestore";
+import { addDoc, collection,query ,getDocs, getDoc, doc, deleteDoc, setDoc} from "firebase/firestore";
 import { db } from "../Firebase/firebase";
+import { act } from "react";
+
+export const updateEventByID= createAsyncThunk('updateEventByID',async({id,data})=>{
+    try {
+        const docRef = doc(db,"events",id);
+        const res = await setDoc(docRef,data,{merge:true})
+        if(res){
+            return "Data successfully updated"
+        }
+    } catch (error) {
+        console.log("error in update",error);
+        
+          return error
+    }
+})
+
+export const geteventById = createAsyncThunk('geteventById',async(id)=>{
+     try {
+        const docRef = doc(db,"events",id);
+        const res = await getDoc(docRef);
+       
+        const eventData = res.data();
+        eventData['id']=res.id
+         console.log(eventData);
+
+         return eventData ?? [];
+      
+    } catch (error) {
+        return error
+    }
+})
 
 export const deleteEvent = createAsyncThunk('deleteEvent',async(id)=>{
     try {
@@ -30,8 +61,10 @@ export const deleteEvent = createAsyncThunk('deleteEvent',async(id)=>{
              })
         }
        // console.log(eventCatData);
-        return eventCatData;
+        return eventCatData ?? [];
       } catch (error) {
+        console.log("error",error);
+        
           return error;
       }
         
@@ -106,6 +139,22 @@ const EventSlice = createSlice({
         })
         .addCase(deleteEvent.rejected,(state,action)=>{
             state.error=action.payload
+        })
+        .addCase(geteventById.pending,(state,action)=>{
+            state.loading= true
+        })
+        .addCase(geteventById.fulfilled,(state,action)=>{
+            state.singleEvent= action.payload;
+            state.loading=-false
+        })
+        .addCase(geteventById.rejected,(state,action)=>{
+            state.error= action.payload
+        })
+        .addCase(updateEventByID.fulfilled,(state,action)=>{
+            state.msg = action.payload
+        })
+        .addCase(updateEventByID.rejected,(state,action)=>{
+            state.error = action.payload
         })
     }
 })

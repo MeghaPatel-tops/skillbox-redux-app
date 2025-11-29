@@ -11,6 +11,7 @@ import Category from "./Admin/Category"
 import AddCategory from "./Admin/AddCategory"
 import AddEvent from "./Admin/AddEvent"
 import AdminEvent from "./Admin/AdminEvent"
+import EditEvent from "./Admin/EditEvent"
 
 
 
@@ -33,6 +34,8 @@ function App() {
           <Route path="/admin/category/create" element={<AddCategory/>}/>
            <Route path="/admin/event/create" element={<AddEvent/>}/>
             <Route path="/admin/event/" element={<AdminEvent/>}/>
+          <Route path="/admin/event/edit/:id" element={<EditEvent/>}/>
+
           </Route>
       </Routes>
     </>

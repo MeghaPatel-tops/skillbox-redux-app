@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { store } from '../Slice/store'
 import { getCategory } from '../Slice/Category';
 import { createEvent } from '../Slice/EventSlice';
+import { useNavigate } from 'react-router-dom';
 
 function AddEvent() {
+  const navigate = useNavigate();
     const dispatch = useDispatch();
     const {error,data} = useSelector((state)=>state.category)
     const {msg}=useSelector((state)=>state.event)
@@ -45,7 +47,7 @@ const toBase64 = (file) => {
             console.log(formData);
 
             dispatch(createEvent(formData))
-            alert(msg);
+            navigate('/admin/event')
             
     }
   return (

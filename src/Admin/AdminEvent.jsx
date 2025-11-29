@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { store } from '../Slice/store';
 import {  deleteEvent, getEventWithCtaegory,  } from '../Slice/EventSlice';
 import Swal from 'sweetalert2'
+import { NavLink } from 'react-router-dom';
 
 
 function AdminEvent() {
@@ -27,6 +28,7 @@ function AdminEvent() {
     },[])
   return (
     <div>
+        <NavLink to={'/admin/event/create'} >Add new</NavLink>
         <h1>Events Data</h1>
         {
             loading &&  <h2>Loadding......</h2> 
@@ -47,6 +49,7 @@ function AdminEvent() {
                     </thead>
                     <tbody>
                         {
+                             eventData &&
                             eventData.map((index,i)=>(
                                 <tr key={i}>
                                     <td>{index.event_title}</td>
@@ -57,6 +60,9 @@ function AdminEvent() {
                                     <td><button onClick={()=>{
                                         delEvent(index.id)
                                     }}>Delete</button></td>
+                                    <td>
+                                        <NavLink to={`edit/${index.id}`}>Edit</NavLink>
+                                    </td>
                                 </tr>
                             ))
                         }
