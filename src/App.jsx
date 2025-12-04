@@ -12,6 +12,7 @@ import AddCategory from "./Admin/AddCategory"
 import AddEvent from "./Admin/AddEvent"
 import AdminEvent from "./Admin/AdminEvent"
 import EditEvent from "./Admin/EditEvent"
+import Profile from "./auth/Profile"
 
 
 
@@ -27,6 +28,7 @@ function App() {
            <Route path="/login" element={<Login></Login>}/>
            <Route path="/register" element={<Registration/>} />
            <Route path="/event" element={<Events/>}/>
+           <Route path="/profile" element={<Profile/>}/>
            
         </Route>
          <Route path="/admin" element={<AdminLayout/>}>

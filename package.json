@@ -12,6 +12,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",
     "firebase": "^11.10.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-encode": "^1.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-redux": "^9.2.0",
