@@ -13,6 +13,8 @@ import AddEvent from "./Admin/AddEvent"
 import AdminEvent from "./Admin/AdminEvent"
 import EditEvent from "./Admin/EditEvent"
 import Profile from "./auth/Profile"
+import Addseat from "./Admin/Addseat"
+import Bookedevent from "./user/Bookedevent"
 
 
 
@@ -29,6 +31,7 @@ function App() {
            <Route path="/register" element={<Registration/>} />
            <Route path="/event" element={<Events/>}/>
            <Route path="/profile" element={<Profile/>}/>
+            <Route path="/booking/:eventid" element={<Bookedevent/>}/>
            
         </Route>
          <Route path="/admin" element={<AdminLayout/>}>
@@ -37,6 +40,7 @@ function App() {
            <Route path="/admin/event/create" element={<AddEvent/>}/>
             <Route path="/admin/event/" element={<AdminEvent/>}/>
           <Route path="/admin/event/edit/:id" element={<EditEvent/>}/>
+          <Route path="/admin/event/addseat/:eventid" element={<Addseat/>}/>
 
           </Route>
       </Routes>

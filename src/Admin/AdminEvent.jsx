@@ -63,6 +63,9 @@ function AdminEvent() {
                                     <td>
                                         <NavLink to={`edit/${index.id}`}>Edit</NavLink>
                                     </td>
+                                    <td>
+                                          <NavLink to={`addseat/${index.id}`}>Manage Seat Arrangement</NavLink>
+                                    </td>
                                 </tr>
                             ))
                         }

@@ -3,6 +3,20 @@ import { addDoc, collection, getDoc, getDocs, query,doc,deleteDoc,where } from "
 import { db } from "../Firebase/firebase";
 import  sign  from "jwt-encode";
 
+export const checkUserAuth = async(userData)=>{
+  const q = query(collection(db, "user_token"), where("uid", "==",userData.uid),where("user_token","==",userData.token ));
+  const querySnapshot = await getDocs(q);
+
+  console.log("Docs found:", querySnapshot.size);
+
+  if (querySnapshot.empty) {
+    console.log("No token found for this UID.");
+    return false;
+  }
+  else{
+       return true;
+  }
+}
 
 const findUserToken = async (uid) => {
   console.log("Running findUserToken(), UID:", uid);

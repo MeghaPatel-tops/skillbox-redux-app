@@ -1,7 +1,46 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addDoc, collection,query ,getDocs, getDoc, doc, deleteDoc, setDoc} from "firebase/firestore";
+import { addDoc, collection,query ,getDocs, getDoc, doc, deleteDoc, setDoc, where} from "firebase/firestore";
 import { db } from "../Firebase/firebase";
 import { act } from "react";
+
+export const getEventSeatById = createAsyncThunk('getEventSeatById',async(eventid)=>{
+    try {
+        console.log("inthunkid",eventid);
+        
+        const q = query(collection(db,"eventseat"),where('eventId',"==",eventid));
+        const result = await getDocs(q);
+        let eventSeatArray=[]
+         result.forEach(doc => {
+               eventSeatArray.push({...doc.data(),id:doc.id})
+           });
+        //console.log("eventseat",eventSeatArray);
+        return eventSeatArray;
+        
+        
+    } catch (error) {
+        console.log(error);
+        return error
+        
+    }
+})
+
+export const addSeatByEvent = createAsyncThunk('addSeatByEvent',async(data)=>{
+    try {
+        const docRef = collection(db,"eventseat");
+        const res = await addDoc(docRef,data);
+        console.log("inthunk",res);
+        
+        if(res){
+            return {
+                'msg':"Data Successfulyy Added"
+            }
+        }
+    } catch (error) {
+        console.log("inthunk error",error);
+        
+        return  error;
+    }
+})
 
 export const updateEventByID= createAsyncThunk('updateEventByID',async({id,data})=>{
     try {
@@ -60,8 +99,8 @@ export const deleteEvent = createAsyncThunk('deleteEvent',async(id)=>{
                 ...(catDataEvent.exists()? catDataEvent.data() :{})
              })
         }
-       // console.log(eventCatData);
-        return eventCatData ?? [];
+      
+        return eventCatData ;
       } catch (error) {
         console.log("error",error);
         
@@ -106,7 +145,8 @@ const EventSlice = createSlice({
         eventData:[],
         singleEvent:{},
         loading:false,
-        eventid:null
+        eventid:null,
+        eventSeatdataByid:[]
     },
     reducers:{
         setEvent:(state,action)=>{
@@ -129,6 +169,7 @@ const EventSlice = createSlice({
         })
         .addCase(getEventWithCtaegory.fulfilled,(state,action)=>{
             state.eventData=action.payload;
+           
             state.loading=false
         })
         .addCase(getEventWithCtaegory.rejected,(state,action)=>{
@@ -155,6 +196,22 @@ const EventSlice = createSlice({
         })
         .addCase(updateEventByID.rejected,(state,action)=>{
             state.error = action.payload
+        })
+        .addCase(addSeatByEvent.fulfilled,(state,action)=>{
+            state.msg= action.payload.msg;
+        })
+         .addCase(addSeatByEvent.rejected,(state,action)=>{
+            state.error= action.payload;
+        })
+        .addCase(getEventSeatById.rejected,(state,action)=>{
+                state.error= action.payload
+        })
+        .addCase(getEventSeatById.fulfilled,(state,action)=>{
+             state.loading=false
+               state.eventSeatdataByid=action.payload
+        })
+        .addCase(getEventSeatById.pending,(state,action)=>{
+               state.loading=true
         })
     }
 })
