@@ -1,8 +1,37 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addDoc, collection,query ,getDocs, getDoc, doc, deleteDoc, setDoc, where} from "firebase/firestore";
+import { addDoc, collection,query ,getDocs, getDoc, doc, deleteDoc, setDoc, where, updateDoc} from "firebase/firestore";
 import { db } from "../Firebase/firebase";
 import { act } from "react";
 
+export const bookSeatByUserThunk = createAsyncThunk('bookedEventByUserid',async(data)=>{
+        try {
+            console.log(data.rowid);
+            
+            const docRef = doc(db,"eventseat",data.rowid);
+            const docData = await getDoc(docRef);
+            const oldData = docData.data();
+
+            await updateDoc(docRef,{
+                  ...oldData,
+                  bookedSeat:parseInt(oldData.bookedSeat)+parseInt(data.occupied),
+                  noOfSeat:parseInt(oldData.noOfSeat)- parseInt(data.occupied)
+            })
+            const bookedSeatData={
+                'seatRowId':data.rowid,
+                'totalSeat':data.occupied,
+                'userId':localStorage.getItem('firebaseUID')
+            }
+            const addDocRef = collection(db,"bookedByUser");
+            const result = await addDoc(addDocRef,bookedSeatData);
+            if(result){
+                return "Seat Booked!";
+            }
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+})
 export const getEventSeatById = createAsyncThunk('getEventSeatById',async(eventid)=>{
     try {
         console.log("inthunkid",eventid);
@@ -26,6 +55,7 @@ export const getEventSeatById = createAsyncThunk('getEventSeatById',async(eventi
 
 export const addSeatByEvent = createAsyncThunk('addSeatByEvent',async(data)=>{
     try {
+        data['bookedSeat']=0;
         const docRef = collection(db,"eventseat");
         const res = await addDoc(docRef,data);
         console.log("inthunk",res);
@@ -212,6 +242,9 @@ const EventSlice = createSlice({
         })
         .addCase(getEventSeatById.pending,(state,action)=>{
                state.loading=true
+        })
+        .addCase(bookSeatByUserThunk.fulfilled,(state,action)=>{
+            state.msg=action.payload;
         })
     }
 })
